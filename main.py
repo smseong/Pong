@@ -1,29 +1,27 @@
 import pygame, sys
+from game import *
 from pygame.locals import *
 
 
 def main():
-    init()
+    game = Game('Pong')
+    # Main game loop
     while True:
-        update()
-        draw()
+
+        loops = 0
+        while pygame.time.get_ticks() > game.nextGameTick and loops < game.MAX_FRAMESKIP:
+            
+            game.update()
+
+            game.nextGameTick += game.SKIP_TICKS
+            loops += 1
+
+        interpolation = float(pygame.time.get_ticks() + game.SKIP_TICKS - game.nextGameTick) / float(game.SKIP_TICKS)
+
+        
+        game.render(interpolation)
     
 
-
-def update():
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-
-def draw():
-    pygame.display.update()
-
-
-def init():
-    pygame.init()
-    size = width, height = 400, 300
-    screen = pygame.display.set_mode(size)
     
 if __name__ == "__main__":
     main()
